@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Check flake
+        run: nix flake check --print-build-logs
+
+      - name: Check formatting
+        run: nix develop --command nixfmt --check default.nix flake.nix
+
+      - name: Run statix
+        run: nix develop --command statix check .
+
+      - name: Run deadnix
+        run: nix develop --command deadnix --fail .
+
+      - name: Build default package
+        run: nix build .#default --print-build-logs
