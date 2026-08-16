@@ -1,0 +1,17 @@
+# Nix
+result
+result-*
+
+# direnv
+.direnv/
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Operating systems
+.DS_Store
+Thumbs.db
